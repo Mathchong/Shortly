@@ -28,6 +28,8 @@ export default class accountController {
             const user = await db.query(`select * from users where email = $1`,[email])
             if(!user.rowCount) return res.sendStatus(401)
 
+            if(!bcrypt.compareSync(password, user.rows[0].password)) return res.sendStatus(401)
+
             const token = uuid()
 
             await db.query(`INSERT INTO sessions ("userId",token) VALUES
